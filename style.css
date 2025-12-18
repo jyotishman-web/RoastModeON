@@ -47,11 +47,12 @@ footer a {
   text-decoration: none;
 }
 .roast-card {
-  background: linear-gradient(160deg, #111, #000);
-  border-radius: 18px;
-  padding: 28px;
-  margin-top: 25px;
-  box-shadow: 0 0 30px rgba(255, 87, 34, 0.35);
-  font-size: 18px;
-  line-height: 1.6;
+  background: radial-gradient(circle at top, #1a1a1a, #000);
+  border-radius: 20px;
+  padding: 30px;
+  margin-top: 30px;
+  box-shadow: 0 0 40px rgba(255, 60, 0, 0.35);
+  font-size: 19px;
+  line-height: 1.7;
+  letter-spacing: 0.3px;
 }
