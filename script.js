@@ -2,90 +2,104 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function analyzeInput(text) {
+  const len = text.length;
+  const vowels = (text.match(/[aeiou]/gi) || []).length;
+  if (len <= 3) return "short";
+  if (vowels <= 2) return "dry";
+  if (len >= 9) return "dramatic";
+  return "normal";
+}
+
+function getMemory() {
+  return JSON.parse(localStorage.getItem("roastMemory") || "[]");
+}
+
+function saveMemory(r) {
+  const m = getMemory();
+  m.push(r);
+  localStorage.setItem("roastMemory", JSON.stringify(m.slice(-60)));
+}
+
 function generateRoast() {
   const input = document.getElementById("nameInput").value.trim();
+  const mode = document.getElementById("mode").value;
   const output = document.getElementById("output");
 
   if (!input) {
     output.innerText =
-      "Leaving it blank somehow says more than typing ever could.";
+      "Khaali chhod diya? Makes sense. Preparation bhi waise hi lag rahi hai.";
     return;
   }
 
-  // 🧨 LAYER 1 — Openings
-  const openings = [
-    "Let’s not sugarcoat it:",
-    "Respectfully speaking,",
-    "No personal attack here, but",
-    "Objectively evaluated,",
-    "With full honesty,",
-    "This is constructive criticism:",
-    "Purely observationally,",
-    "Not trying to be rude, however,"
+  const profile = analyzeInput(input);
+  const used = getMemory();
+
+  // 🎭 Fake respect (very Carry-style)
+  const intros = [
+    "Bhai respect hai, lekin",
+    "No hate, bas sach bol raha hoon:",
+    "Galat mat samajhna, par",
+    "Dil pe mat lena, par",
+    "Personally kuch nahi, lekin"
   ];
 
-  // 🎯 LAYER 2 — Target framing
-  const frames = [
-    `${input} has the confidence of a keynote speaker`,
-    `${input} moves like someone who read half the instructions`,
-    `${input} gives strong “future success” energy`,
-    `${input} operates like effort guarantees results`,
-    `${input} behaves like preparation is optional`,
-    `${input} approaches life with impressive optimism`,
-    `${input} shows up mentally, just not strategically`,
-    `${input} believes potential should be enough`
+  // 🧠 Core ego attack (name-aware)
+  const cores = {
+    short: [
+      `${input} ka confidence size mein chhota, volume mein full.`,
+      `${input} bolta aise hai jaise plan ready ho — execution optional.`
+    ],
+    dry: [
+      `${input} effort daalta hai, direction bhool jaata hai.`,
+      `${input} motion ko progress samajh leta hai.`
+    ],
+    dramatic: [
+      `${input} ambition ko personality bana ke ghoom raha hai.`,
+      `${input} future success pe zyada depend karta hai, present effort pe kam.`
+    ],
+    normal: [
+      `${input} expectations high rakhta hai, standards flexible.`,
+      `${input} confidence dikhata hai, consistency nahi.`
+    ]
+  };
+
+  // 🔥 Carry-level exaggeration
+  const exaggerations = [
+    "Confidence itna hai jaise duniya hi galat ho.",
+    "Self-belief unlimited, self-improvement optional.",
+    "Energy full hai, planning half.",
+    "Sapne HD mein hain, skills abhi buffering pe."
   ];
 
-  // 🔥 LAYER 3 — Core savage burns
-  const cores = [
-    "but execution keeps missing the deadline",
-    "while reality keeps correcting the expectations",
-    "and consistency refuses to cooperate",
-    "yet discipline never fully committed",
-    "but follow-through quietly disappeared",
-    "while progress took a different route",
-    "but results didn’t get invited",
-    "and accountability chose not to attend",
-    "while effort peaked emotionally, not practically",
-    "but planning stopped at motivation"
+  // 💣 Reality slap (this is where it HITS)
+  const carryFinishers = [
+    "Talent aayega, bas schedule thoda unclear hai.",
+    "Reality check free tha, isliye de diya.",
+    "Mehnat shuru hote hi excuses line mein lag jaate hain.",
+    "Potential pe zinda rehna band kar, result dikha.",
+    "Bhai vibe strong hai, bas output weak hai."
   ];
 
-  // 🧠 LAYER 4 — Psychological twists
-  const twists = [
-    "Confidence is doing most of the work here.",
-    "Self-awareness is clearly optional.",
-    "Ambition arrived early; skills are still buffering.",
-    "The mindset is elite, the habits are not.",
-    "Motivation showed up, structure did not.",
-    "The vision is strong, the system is weak.",
-    "Energy is high, direction is negotiable.",
-    "The idea is premium, execution is trial version.",
-    "Potential detected, consistency pending.",
-    "Growth wants commitment, not enthusiasm."
-  ];
+  let roast;
+  let tries = 0;
 
-  // 💀 LAYER 5 — Finishers (the kill shot, still safe)
-  const finishers = [
-    "It’s bold. Not effective, but bold.",
-    "Impressive confidence, questionable results.",
-    "The effort is emotional, not strategic.",
-    "Progress will require a firmware update.",
-    "It’s a journey — just not a fast one.",
-    "Results are still under construction.",
-    "The vibes are strong, outcomes are average.",
-    "Reality remains unconvinced.",
-    "Consistency has left the building.",
-    "Execution is currently on backorder."
-  ];
+  do {
+    roast = [
+      pick(intros),
+      pick(cores[profile]),
+      pick(exaggerations),
+      mode === "carry" ? pick(carryFinishers) : ""
+    ].join(" ");
+    tries++;
+  } while (used.includes(roast) && tries < 10);
 
-  // 🎲 FINAL ROAST
-  const roast = [
-    pick(openings),
-    pick(frames),
-    pick(cores) + ".",
-    pick(twists),
-    pick(finishers)
-  ].join(" ");
+  saveMemory(roast);
 
-  output.innerText = roast;
+  output.innerHTML = `
+    <div class="roast-card">
+      <h3>🔥 RoastModeON</h3>
+      <p>${roast}</p>
+    </div>
+  `;
 }
