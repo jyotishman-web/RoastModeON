@@ -2,23 +2,20 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function analyzeInput(text) {
-  const len = text.length;
-  const vowels = (text.match(/[aeiou]/gi) || []).length;
-  if (len <= 3) return "short";
-  if (vowels <= 2) return "dry";
-  if (len >= 9) return "dramatic";
-  return "normal";
+function analyze(text) {
+  if (text.length <= 3) return "tiny";
+  if (text.length >= 10) return "overconfident";
+  return "average";
 }
 
-function getMemory() {
-  return JSON.parse(localStorage.getItem("roastMemory") || "[]");
+function memory() {
+  return JSON.parse(localStorage.getItem("aggressiveMemory") || "[]");
 }
 
-function saveMemory(r) {
-  const m = getMemory();
+function save(r) {
+  const m = memory();
   m.push(r);
-  localStorage.setItem("roastMemory", JSON.stringify(m.slice(-60)));
+  localStorage.setItem("aggressiveMemory", JSON.stringify(m.slice(-80)));
 }
 
 function generateRoast() {
@@ -28,73 +25,71 @@ function generateRoast() {
 
   if (!input) {
     output.innerText =
-      "Khaali chhod diya? Makes sense. Preparation bhi waise hi lag rahi hai.";
+      "Blank input. Same energy you bring to execution.";
     return;
   }
 
-  const profile = analyzeInput(input);
-  const used = getMemory();
+  const profile = analyze(input);
+  const used = memory();
 
-  // 🎭 Fake respect (very Carry-style)
-  const intros = [
-    "Bhai respect hai, lekin",
-    "No hate, bas sach bol raha hoon:",
-    "Galat mat samajhna, par",
-    "Dil pe mat lena, par",
-    "Personally kuch nahi, lekin"
+  // 🎭 Fake politeness (very dangerous)
+  const openings = [
+    "No disrespect intended, but",
+    "I’m saying this calmly:",
+    "Take this constructively:",
+    "Not attacking you, just stating facts:",
+    "Let’s be brutally honest:"
   ];
 
-  // 🧠 Core ego attack (name-aware)
+  // 🔥 Aggressive ego exposure
   const cores = {
-    short: [
-      `${input} ka confidence size mein chhota, volume mein full.`,
-      `${input} bolta aise hai jaise plan ready ho — execution optional.`
+    tiny: [
+      `${input} talks big for someone operating on minimal preparation.`,
+      `${input} has loud confidence with quiet results.`
     ],
-    dry: [
-      `${input} effort daalta hai, direction bhool jaata hai.`,
-      `${input} motion ko progress samajh leta hai.`
+    overconfident: [
+      `${input} treats ambition like a substitute for discipline.`,
+      `${input} believes confidence alone should carry the outcome.`
     ],
-    dramatic: [
-      `${input} ambition ko personality bana ke ghoom raha hai.`,
-      `${input} future success pe zyada depend karta hai, present effort pe kam.`
-    ],
-    normal: [
-      `${input} expectations high rakhta hai, standards flexible.`,
-      `${input} confidence dikhata hai, consistency nahi.`
+    average: [
+      `${input} moves like effort guarantees success.`,
+      `${input} expects results without respecting the process.`
     ]
   };
 
-  // 🔥 Carry-level exaggeration
-  const exaggerations = [
-    "Confidence itna hai jaise duniya hi galat ho.",
-    "Self-belief unlimited, self-improvement optional.",
-    "Energy full hai, planning half.",
-    "Sapne HD mein hain, skills abhi buffering pe."
+  // 💣 Pressure escalation
+  const escalations = [
+    "Self-belief is high, self-awareness is missing.",
+    "You confuse motion with progress.",
+    "Energy is present, direction is not.",
+    "You’re busy, not effective.",
+    "Motivation shows up, consistency does not."
   ];
 
-  // 💣 Reality slap (this is where it HITS)
-  const carryFinishers = [
-    "Talent aayega, bas schedule thoda unclear hai.",
-    "Reality check free tha, isliye de diya.",
-    "Mehnat shuru hote hi excuses line mein lag jaate hain.",
-    "Potential pe zinda rehna band kar, result dikha.",
-    "Bhai vibe strong hai, bas output weak hai."
+  // ☠️ Ruthless closers (this is the slap)
+  const finishers = [
+    "Reality keeps exposing the gap.",
+    "Confidence isn’t covering the deficit anymore.",
+    "Results are the only thing not impressed.",
+    "Potential has expired.",
+    "Excuses are working harder than you are.",
+    "The illusion is strong. The output is weak."
   ];
 
   let roast;
-  let tries = 0;
+  let attempts = 0;
 
   do {
     roast = [
-      pick(intros),
+      pick(openings),
       pick(cores[profile]),
-      pick(exaggerations),
-      mode === "carry" ? pick(carryFinishers) : ""
+      pick(escalations),
+      mode === "aggressive" ? pick(finishers) : ""
     ].join(" ");
-    tries++;
-  } while (used.includes(roast) && tries < 10);
+    attempts++;
+  } while (used.includes(roast) && attempts < 12);
 
-  saveMemory(roast);
+  save(roast);
 
   output.innerHTML = `
     <div class="roast-card">
